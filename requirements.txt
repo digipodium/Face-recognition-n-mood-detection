@@ -1,0 +1,10 @@
+streamlit
+sqlalchemy
+pillow
+opencv-contrib-python
+tensorflow
+pandas
+numpy
+seaborn
+matplotlib
+fer
