@@ -3,30 +3,34 @@ import cv2
 import os
 
 
-def record(camera=0,outfile = 'videos/recording.avi'):
+def record(camera=0,outfile = 'videos/recording.mp4'):
     cap = cv2.VideoCapture(camera)
-
+    height, width = (
+            int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+            int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+        )
+    fps = cap.get(cv2.CAP_PROP_FPS)
     # Define the codec and create VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(outfile,fourcc, 20.0, (640,480))
+    fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
+    out = cv2.VideoWriter(outfile,fourcc, fps, (width,height),True)
 
     while(cap.isOpened()):
         ret, frame = cap.read()
         if ret==True:
             out.write(frame)
+            cv2.putText(frame,"press esc to stop recording",(5,15),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,255,0),1,cv2.LINE_AA,)
             cv2.imshow('frame',frame)
-            cv2.putText(frame,"press esc to stop recording",(5,15),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),1,cv2.LINE_AA,)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == 27:
                 break
         else:
             cap.release()
             out.release()
             cv2.destroyAllWindows()
-            return False
+            return None
     cap.release()
     out.release()
     cv2.destroyAllWindows()
-    return True
+    return outfile
 
 def detect_face_in_webcam(camera=0,cascade_path='models/face_finder.xml'):
 

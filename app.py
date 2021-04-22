@@ -13,6 +13,8 @@ from prediction import detect_face, detect_emotion,detect_emotion_in_video, dete
 import cv2
 import pandas as pd
 import moviepy.editor as moviepy
+import webcam
+
 
 
 def open_db():
@@ -63,7 +65,6 @@ if choice =='upload image':
         # show a msg
         st.sidebar.image(im,use_column_width=True)
         st.success('image uploaded successfully')
-
 if is_image_uploaded and im_path:
     ch2 = st.sidebar.selectbox("what do you want",SUB_MENU)
     if ch2 == 'detect face':
@@ -109,7 +110,7 @@ if choice =='upload video':
             f.write(videodata.getbuffer())
         # saves info to db
         sess = open_db()
-        imdb = db.Image(path=path)
+        imdb = db.Video(path=path)
         sess.add(imdb)
         sess.commit()
         sess.close()
@@ -128,6 +129,7 @@ if is_video_uploaded and vid_path:
         st.subheader("face and mood detection in video")
         max_results =st.number_input('max results',min_value=10,max_value=1200,value=300)
         freq =st.number_input('frequency of frames',min_value=1,max_value=50,value=5)
+        st.info("reduce this to 1 if you want full video analysis, and increase if you want to skip frames")
         with st.spinner("please wait, AI code working, take 5 to 10 mins or more"):
             result = detect_emotion_in_video(vid_path,max_results,freq)
             st.sidebar.write(result)
@@ -141,6 +143,28 @@ if is_video_uploaded and vid_path:
             else:
                 st.error(result)
 
+if choice == 'use webcam':
+    st.sidebar.markdown('''
+    - face detection : will find faces in the webcam. It will start a popup window and you have to click on the window to view the output
+    ''')
+    ch2 = st.sidebar.selectbox("what do you want",SUB_MENU_WEBCAM)
+    if ch2 == 'detect face in webcam':
+        st.subheader("Please check the pop window")
+        out = webcam.detect_face_in_webcam(cascade_path=FACE_MODEL)
+
+
 if choice == 'about project':
-    st.subheader('about project')
-    st.image('project.png')
+    st.subheader('Database saved predictions')
+    st.sidebar.image('project.png')
+    sess = open_db()
+    results = sess.query(db.Video).all()
+    sess.close()
+    if len(results):
+        videos = list({item.path for item in results})
+        video_path = st.sidebar.radio("Select a video",videos)
+  
+        col1,col2 = st.beta_columns(2)
+        root, ext = os.path.splitext(os.path.basename(video_path))
+        output = os.path.join(VID_RESULT_FOLDER, f"{root}_output{ext}")
+        col1.video(video_path)
+        col2.video(output)

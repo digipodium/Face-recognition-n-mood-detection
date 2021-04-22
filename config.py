@@ -14,3 +14,4 @@ TITLE = "Face recognizer & mood detection"
 MENU = ['about project','upload image','upload video','use webcam',]
 SUB_MENU = ['click here','detect face', 'detect face and mood']
 SUB_MENU_VIDEO = ['click here','detect face in video','detect face and mood in video']
+SUB_MENU_WEBCAM = ['click here','detect face in webcam','detect face and mood in webcam recording']
