@@ -12,4 +12,5 @@ VGG_MODEL_WEIGHT = f'{MODEL_FOLDER}/model_weights.xml'
 
 TITLE = "Face recognizer & mood detection"
 MENU = ['about project','upload image','upload video','use webcam',]
-SUB_MENU = ['detect face', 'detect face and mood']
+SUB_MENU = ['click here','detect face', 'detect face and mood']
+SUB_MENU_VIDEO = ['click here','detect face in video','detect face and mood in video']
