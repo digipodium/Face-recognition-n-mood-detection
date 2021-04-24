@@ -124,6 +124,12 @@ if is_video_uploaded and vid_path:
     if ch2 == 'detect face in video':
         st.subheader("Please check the pop window")
         out = detect_face_in_video(vid_path,FACE_MODEL)
+        st.write(out)
+        root, ext = os.path.splitext(os.path.basename(out))
+        new_path = convert_video(out,f'{root}_output{ext}','mp4')
+        st.success("task completed")
+        st.write(new_path)
+        st.video(new_path)
         
     if ch2 == 'detect face and mood in video':
         st.subheader("face and mood detection in video")

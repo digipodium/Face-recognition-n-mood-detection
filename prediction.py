@@ -34,15 +34,23 @@ def detect_emotion_in_video(video_file_path,max_results,freq):
     return video.analyze(detector,display=False,save_video=True,max_results=max_results,frequency=freq,save_frames=False,zip_images=False)
 
 def detect_face_in_video(video_file_path,cascade_path='models/face_finder.xml'):
-    is_error = False
     cap = cv2.VideoCapture(video_file_path) 
+    name,ext = os.path.splitext(os.path.basename(video_file_path))
+    height, width = (
+            int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+            int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    outfile = f'{name}_inter{ext}'
+    fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
+    videowriter = cv2.VideoWriter(
+            outfile, fourcc, fps, (width, height), True
+        )
     if os.path.exists(cascade_path):
         print('cascade model found')
         faceModel =cv2.CascadeClassifier(cascade_path)
         while True:
             ret, frame =cap.read()
             if not ret:
-                is_error=True
                 break
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             try:
@@ -59,12 +67,11 @@ def detect_face_in_video(video_file_path,cascade_path='models/face_finder.xml'):
                 cv2.putText(frame,"press esc to close",(5,15),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),1,cv2.LINE_AA,)
             except :
                 pass
-            cv2.imshow('face dectection window',frame)
+            # cv2.imshow('face dectection window',frame)
+            videowriter.write(frame)
             if cv2.waitKey(1) == 27:
                 break
         cap.release()
         cv2.destroyAllWindows()
-    else:
-        is_error=True
-    return is_error
+    return outfile
 
