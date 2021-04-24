@@ -155,9 +155,12 @@ if choice == 'use webcam':
     ''')
     ch2 = st.sidebar.selectbox("what do you want",SUB_MENU_WEBCAM)
     if ch2 == 'detect face in webcam':
-        st.subheader("Please check the pop window")
-        out = webcam.detect_face_in_webcam(cascade_path=FACE_MODEL)
-
+        try:
+            st.subheader("Please check the pop window")
+            out = webcam.detect_face_in_webcam(cascade_path=FACE_MODEL)
+        except:
+            st.subheader("This server does not have a camera")
+            st.info("when deployed on system. camera wont work, it only works on pc, just for testing.")
 
 if choice == 'about project':
     st.subheader('Database saved predictions')
