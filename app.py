@@ -162,9 +162,11 @@ if choice == 'about project':
     if len(results):
         videos = list({item.path for item in results})
         video_path = st.sidebar.radio("Select a video",videos)
-  
-        col1,col2 = st.beta_columns(2)
-        root, ext = os.path.splitext(os.path.basename(video_path))
-        output = os.path.join(VID_RESULT_FOLDER, f"{root}_output{ext}")
-        col1.video(video_path)
-        col2.video(output)
+        if os.path.exists(video_path):
+            col1,col2 = st.beta_columns(2)
+            root, ext = os.path.splitext(os.path.basename(video_path))
+            output = os.path.join(VID_RESULT_FOLDER, f"{root}_output{ext}")
+            col1.video(video_path)
+            col2.video(output)
+        else:
+            st.info('this file have been deleted')

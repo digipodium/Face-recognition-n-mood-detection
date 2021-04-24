@@ -31,7 +31,7 @@ def detect_emotion(img_path):
 def detect_emotion_in_video(video_file_path,max_results,freq):
     video = Video(video_file_path,outdir='video_results')
     detector = FER(mtcnn=True)
-    return video.analyze(detector,display=True,save_video=True,max_results=max_results,frequency=freq,save_frames=False,zip_images=False)
+    return video.analyze(detector,display=False,save_video=True,max_results=max_results,frequency=freq,save_frames=False,zip_images=False)
 
 def detect_face_in_video(video_file_path,cascade_path='models/face_finder.xml'):
     is_error = False
